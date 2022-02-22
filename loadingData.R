@@ -1,9 +1,7 @@
-setwd("~/Desktop/inesGarcia/zebraFishTranscriptome")
-
-library(shiny)
 library(readr)
 library(tibble)
 library(SummarizedExperiment)
+library(SEtools)
 #library(org.Dr.eg.db)
 #library(GOSemSim)
 library(edgeR)
@@ -37,31 +35,6 @@ summExp <- SummarizedExperiment(assays=list(raw = countsData,
                                 colData = colData)
 rowData(summExp) <- rowsInfo
 
-
-ui <- fluidPage(
-  titlePanel(title = 
-               'Gene expression in zebra fish across tissues and developmental stages'),
-  sidebarLayout(
-    sidebarPanel(
- ),
-    mainPanel(
-      tabsetPanel(
-        type = "tabs",
-        tabPanel("Counts", tableOutput(outputId = "rawCounts"),
-                 ),
-        tabPanel("Heatmap", plotOutput("heatmap")),
-        tabPanel("Bar graph", plotOutput("bargraph"))
-    )
-  )
-)
-)
-
-server <- function(input, output, session) {
-    output$rawCounts <- renderTable(assays(summExp)$raw)
-    
-    #output$normalizedCounts <- renderTable(assays(summExp)$normalized)
-  
-}
-
-shinyApp(ui = ui, server = server)
-
+assays(summExp)$normalized
+se <- summExp[1:10, 1:10]
+sehm(se, assayName="normalized", genes=rowData(summExp)$gene_name, do.scale=TRUE)

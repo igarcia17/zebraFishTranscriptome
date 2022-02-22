@@ -19,9 +19,11 @@ input:
 
 - features meta: ensembl ID, gene name, GO
 
+###how to do the GO
+
 - samples meta: sample ID, tissue, dev stage, condition, replicate, gender
 
-#### impovement: allow user to upload the data, and transform it properly into a summarizedExperiment
+#### improvement: allow user to upload the data, and transform it properly into a summarizedExperiment
 
 - check box for table
 

@@ -1,0 +1,59 @@
+---
+title: "Notes"
+output: html_notebook
+---
+
+- packages: edgeR or mkassay
+
+- packages: summarized experiment
+
+data:
+
+- how to work -> summarizeExperiment object
+
+- normalization: cpm + log (add pseudocount)
+
+##### make it possible for the user to change the pseudocount in the input? or customize the normalization?
+
+input:
+
+- features meta: ensembl ID, gene name, GO
+
+- samples meta: sample ID, tissue, dev stage, condition, replicate, gender
+
+#### impovement: allow user to upload the data, and transform it properly into a summarizedExperiment
+
+- check box for table
+
+- tab heatmap: select what samples to show; default, show all
+
+- tab bar graph: take average from similar samples, merge by tissue and by developmental stage
+
+
+output:
+
+- heat map by sample
+
+- bar graph by type of sample
+
+- table with raw counts/normalized
+
+```{r}
+plot(cars)
+```
+
+References:
+
+https://bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html
+
+https://compbiomed.github.io/TBSignatureProfiler-docs/reference/mkAssay.html
+
+https://apps.automeris.io/wpd/
+
+https://huygens.science.uva.nl/PlotTwist/
+
+https://github.com/JoachimGoedhart
+
+https://www.ebi.ac.uk/ena/browser/home
+
+

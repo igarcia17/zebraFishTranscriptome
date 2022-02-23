@@ -16,28 +16,24 @@ countsfile <- './final_counts.csv'
 colData <- read_csv(samplesfile)
 counts <- read_csv(countsfile, skip_empty_rows = TRUE)
 names(counts)[1] <- 'Ensembl_ID'
-#Remove duplicate genes and with missing value for gene_name
-counts <- counts[!duplicated(counts$gene_name), ]
-counts <- counts[!is.na(counts$gene_name),]
+
 #Add a column to colData with a meaningful tag
 colData$colData_tag <- as.factor(apply(colData[c('Sample','Time','Treatment')], 1, 
                                        paste, collapse = "_"))
 
-#uniqExp <- unique(colData$colData_tag)
-
 #Get df of counts, normalized counts and row information
-countsData <- subset(counts, select= -c(Ensembl_ID))
+countsData <- subset(counts, select= -c(gene_name))
 normalizedCounts <- cpm(Filter(is.numeric, countsData), normalized.lib.sizes=TRUE, 
                         log=TRUE, prior.count=1)
-normalizedCounts <- cbind(subset(counts, select = c(gene_name)), normalizedCounts)
+normalizedCounts <- cbind(subset(counts, select = c(Ensembl_ID)), normalizedCounts)
 
-rowsData <- subset(counts, select = c(gene_name, Ensembl_ID))
+rowsData <- subset(counts, select = c(Ensembl_ID, gene_name))
 
 #Set names of rows
 colData <- column_to_rownames(colData, "SRR")
-countsData <- column_to_rownames(countsData, 'gene_name')
-normalizedCounts <- column_to_rownames(normalizedCounts, 'gene_name')
-rowsInfo <- column_to_rownames(rowsData, 'gene_name')
+countsData <- column_to_rownames(countsData, "Ensembl_ID")
+normalizedCounts <- column_to_rownames(normalizedCounts, 'Ensembl_ID')
+rowsInfo <- column_to_rownames(rowsData, 'Ensembl_ID')
 
 #Create summarized Experiment
 summExp <- SummarizedExperiment(assays=list(raw = countsData, 
@@ -54,32 +50,21 @@ ui <- fluidPage(
                'Gene expression in zebra fish across tissues and developmental stages'),
   sidebarLayout(
     sidebarPanel(
-      selectizeInput(inputId = 'genes',
-                     label = 'Choose genes:',
-                     choices = rownames(summExp),
-                     selected = rownames(summExp)[sample(1:31330, 
-                                                                  10, replace=FALSE)],
-                     options = list(maxItems = 100),
-                     multiple = TRUE
-                     )
  ),
     mainPanel(
       tabsetPanel(
         type = "tabs",
         tabPanel("Counts", tableOutput(outputId = "rawCounts"),
-        tabPanel("Heatmap", plotOutput(outputId = "heatmap")),
-        tabPanel("Graph", plotOutput(outputId = "graph"))
+        tabPanel("Heatmap", plotOutput("heatmap")),
+        tabPanel("Bar graph", plotOutput("bargraph"))
     )
   ))))
-#rowData(summExp)$gene_name %in% input$genes
 
 #______________________SERVER___________________________________________________
 server <- function(input, output, session) {
-  genelist.selected <- input$genes
-  dataTable <- assays(summExp)$raw[1:10,]
+    dataTable <- assays(summExp)$raw[]
     dataHM <- assays(summExp)$normalized[]
-    
-    output$rawCounts <- renderTable(dataTable, rownames = TRUE)
+    output$rawCounts <- renderTable(datatohow, rownames = TRUE)
     
 }
 

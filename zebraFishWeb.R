@@ -75,11 +75,12 @@ ui <- fluidPage(
 
 #______________________SERVER___________________________________________________
 server <- function(input, output, session) {
-  genelist.selected <- input$genes
-  dataTable <- assays(summExp)$raw[1:10,]
-    dataHM <- assays(summExp)$normalized[]
+  genelist.selected <- reactive({input$genes})
+  
+  dataTable <- assays(summExp)$raw[genelist.selected,]
+  dataHM <- assays(summExp)$normalized[]
     
-    output$rawCounts <- renderTable(dataTable, rownames = TRUE)
+  output$rawCounts <- renderTable(dataTable, rownames = TRUE)
     
 }
 

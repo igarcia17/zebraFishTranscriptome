@@ -4,11 +4,11 @@ library(shiny)
 library(readr)
 library(tibble)
 library(SummarizedExperiment)
-#library(org.Dr.eg.db)
-#library(GOSemSim)
 library(edgeR)
 library(pheatmap)
-#Load data
+
+
+#_________________________________DATA__________________________________________
 
 ##################is is really an advantage to have these two files at this point?
 #####################isnt it better to load just one and make the colData from the headers?
@@ -51,6 +51,7 @@ rowData(summExp) <- rowsInfo
 rm(counts)
 
 #_________________________________________UI____________________________________
+
 ui <- fluidPage(
   titlePanel(title = 
                'Gene expression in zebra fish across tissues'),
@@ -95,11 +96,12 @@ server <- function(input, output, session) {
   #OUTPUTS
   output$rawCounts <- renderTable(dataTable(), rownames = TRUE, digits = 0)
   
-  output$heatmap <- renderPlot(pheatmap(assays(summExp)$normalized[genelist(),
-                                                                   colData(summExp)$Sample %in% tissuelist()],
+  output$heatmap <- renderPlot(
+    pheatmap(assays(summExp)$normalized[genelist(),colData(summExp)$Sample %in% tissuelist()],
                                         scale="row",cluster_rows = FALSE,
                                         cluster_cols = TRUE))
   
 }
 
 shinyApp(ui = ui, server = server)
+

@@ -8,8 +8,8 @@ library(edgeR)
 library(ggplot2)
 
 #Load data
-samplesfile <- './sra_samples.csv'
-countsfile <- './final_counts.csv'
+samplesfile <- './data/sra_samples.csv'
+countsfile <- './data/final_counts.csv'
 
 colData <- read_csv(samplesfile)
 counts <- read_csv(countsfile, skip_empty_rows = TRUE)

@@ -14,8 +14,8 @@ library(pheatmap)
 
 ##################is is really an advantage to have these two files at this point?
 #####################isnt it better to load just one and make the colData from the headers?
-samplesfile <- './sra_samples.csv'
-countsfile <- './final_counts.csv'
+samplesfile <- './data/sra_samples.csv'
+countsfile <- './data/final_counts.csv'
 
 colData <- read_csv(samplesfile)
 counts <- read_csv(countsfile, skip_empty_rows = TRUE)

@@ -20,6 +20,7 @@ counts <- counts[!is.na(counts$gene_name),]
 #Add a column to colData with a meaningful tag
 colData$colData_tag <- as.factor(apply(colData[c('Sample','Time','Treatment','Replicate', 'Study')], 1, 
                              paste, collapse = "_"))
+colData$Sample <- as.factor(colData$Sample)
 
 #Get df of counts, normalized counts and row information
 countsData <- subset(counts, select= -c(Ensembl_ID))
@@ -64,5 +65,17 @@ sehm(se, assayName="normalized", genes=rowData(summExp)$gene_name, do.scale=TRUE
 tissuelist <- summExp$Sample[(sample(1:70, 2))]
 genelist <- rownames(summExp)[sample(1:10, 5, replace=FALSE)]
 trial <- assays(summExp)$normalized[genelist,
-                           colData(summExp)$Sample == tissuelist]
-       
+                           colData(summExp)$Sample = c("Liver", "BetaCells")]
+      
+trial2 <- assays(summExp)$normalized[genelist,
+                                    colData(summExp)$Sample %in% c("Liver", 
+                                                                 "BetaCells", "Heart")]
+pheatmap(trial,
+         scale="row",cluster_rows = FALSE,
+         cluster_cols = TRUE,
+         cutree_cols = 1
+         ) 
+pheatmap(trial2,
+         scale="row",cluster_rows = FALSE,
+         cluster_cols = TRUE,
+         cutree_cols = 11) 

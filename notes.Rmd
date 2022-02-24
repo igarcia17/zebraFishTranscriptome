@@ -3,17 +3,11 @@ title: "Notes"
 output: html_notebook
 ---
 
-- packages: edgeR or mkassay
-
-- packages: summarized experiment
-
 data:
 
 - how to work -> summarizeExperiment object
 
 - normalization: cpm + log (add pseudocount)
-
-##### make it possible for the user to change the pseudocount in the input? or customize the normalization?
 
 input:
 
@@ -21,7 +15,7 @@ input:
 
 ###how to do the GO
 
-- samples meta: sample ID, tissue, dev stage, condition, replicate, gender
+- samples meta: sample ID, tissue, dev stage, condition, replicate, experiment
 
 #### improvement: allow user to upload the data, and transform it properly into a summarizedExperiment
 
@@ -36,13 +30,9 @@ output:
 
 - heat map by sample
 
-- bar graph by type of sample
+- bar graph by type of sample -> plot is okay
 
-- table with raw counts/normalized
-
-```{r}
-plot(cars)
-```
+- table with raw counts
 
 References:
 

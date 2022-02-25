@@ -1,5 +1,7 @@
 setwd("~/Desktop/inesGarcia/zebraFishTranscriptome")
 
+library(BiocManager)
+options(repos = BiocManager::repositories())
 library(shiny)
 library(readr)
 library(tibble)

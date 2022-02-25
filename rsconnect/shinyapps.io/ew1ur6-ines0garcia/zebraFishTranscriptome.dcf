@@ -1,0 +1,14 @@
+name: zebraFishTranscriptome
+title:
+username:
+account: ew1ur6-ines0garcia
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5732280
+bundleId: 5616570
+url: https://ew1ur6-ines0garcia.shinyapps.io/zebraFishTranscriptome/
+when: 1645779560.74182
+lastSyncTime: 1645779560.74183
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .RData|data/icon.jpg|loadingData.R|notes.Rmd|README.md

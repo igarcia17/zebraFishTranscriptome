@@ -8,27 +8,29 @@ library(edgeR)
 library(ggplot2)
 
 #Load data
-samplesfile <- './data/sra_samples.csv'
-countsfile <- './data/final_counts_info.csv'
+.samplesfile <- './data/sra_samples.csv'
+.countsfile <- './data/final_counts_info.csv'
 
+#Load data
 colData <- read_csv(samplesfile, show_col_types = FALSE)
 counts <- read_csv(countsfile, skip_empty_rows = TRUE, show_col_types = FALSE)
 names(counts)[1] <- 'Ensembl_ID'
 
-#Remove duplicates and missing values of gene_name
+#Remove duplicates and missing values of gene_name in counts variable
 counts <- counts[!duplicated(counts$gene_name), ]
 counts <- counts[!is.na(counts$gene_name),]
 
-#Add a column to colData with a meaningful tag
+#Add a column to colData with a meaningful tag, make Samples column a factor
 colData$colData_tag <- as.factor(apply(colData[c('Sample','Time','Treatment','Replicate', 'Study')], 1, 
-                             paste, collapse = "_"))
+                                       paste, collapse = "_"))
 colData$Sample <- as.factor(colData$Sample)
 
-#Get df of counts, normalized counts and row information
+#Get df of counts, normalized counts and row information. Clean colData.
 countsData <- subset(counts, select= -c(Ensembl_ID))
 
 colData <- colData[match(as.vector(colnames(countsData)), colData$colData_tag),]
 colData <- colData[!is.na(colData$colData_tag),]
+
 normalizedCounts <- cpm(Filter(is.numeric, countsData), normalized.lib.sizes=TRUE, 
                         log=TRUE, prior.count=1)
 normalizedCounts <- cbind(subset(counts, select = c(gene_name)), normalizedCounts)
@@ -48,38 +50,15 @@ rowData(summExp) <- rowsInfo
 
 #Remove intermediate variable 'counts'
 rm(counts)
-
 #_______________________________________________________________________________
-#To get only a subset of certain class (for bargraph)
-se1 <- summExp[,colData(summExp)$Sample == "Liver"]
-se2 <- se1[colData(se1)$Time == '5dpf']
-#For a particular gene
-se3.2 <- se2[!is.na(rowData(se2)$gene_name == 'lrp6')]
 
-assays(summExp)$normalized[rownames(summExp)[sample(1:10, 5, replace=FALSE)],tissueList()]
+“cosmo”, 
+ “darkly”
+“flatly”
+“journal”
+“lumen”, “lux”,
+“minty”, “pulse”, “sandstone”, “simplex”, “sketchy”,
+“superhero”, “united”, “yeti”
 
-mat <- as.matrix(assays(se2)$normalized)
-pheatmap(mat[1:10,1:20])
-sechm(assay(se3.2)$normalized)
-#Access data frame of normalized data
-temp <- assays(summExp)$normalized
-se <- summExp[1:10, 1:10]
-sehm(se, assayName="normalized", genes=rowData(summExp)$gene_name, do.scale=TRUE)
 
-tissuelist <- summExp$Sample[(sample(1:70, 2))]
-genelist <- rownames(summExp)[sample(1:10, 5, replace=FALSE)]
-trial <- assays(summExp)$normalized[genelist,
-                           colData(summExp)$Sample = c("Liver", "BetaCells")]
-      
-trial2 <- assays(summExp)$normalized[genelist,
-                                    colData(summExp)$Sample %in% c("Liver", 
-                                                                 "BetaCells", "Heart")]
-pheatmap(trial,
-         scale="row",cluster_rows = FALSE,
-         cluster_cols = TRUE,
-         cutree_cols = 1
-         ) 
-pheatmap(trial2,
-         scale="row",cluster_rows = FALSE,
-         cluster_cols = TRUE,
-         cutree_cols = 11) 
+

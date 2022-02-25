@@ -1,8 +1,15 @@
-setwd("~/Desktop/inesGarcia/zebraFishTranscriptome")
-
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# zebraFishTranscriptome - A Shiny app for visualizing the gene expression in 
+# zebra fish animal model
+# Created by Ines Garcia (@igarcia17), first version February 2022
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 
+# electronic mail address: ines #dot# garciaortiz99 #at# gmail #dot# com
+# 
 library(BiocManager)
 options(repos = BiocManager::repositories())
 library(shiny)
+library(bslib)
 library(readr)
 library(tibble)
 library(SummarizedExperiment)
@@ -11,34 +18,34 @@ library(pheatmap)
 
 
 #_________________________________DATA__________________________________________
+#Locate files
+.samplesfile <- './data/sra_samples.csv'
+.countsfile <- './data/final_counts_info.csv'
 
-##################is is really an advantage to have these two files at this point?
-#####################isnt it better to load just one and make the colData from the headers?
-
-samplesfile <- './data/sra_samples.csv'
-countsfile <- './data/final_counts_info.csv'
-
+#Load data
 colData <- read_csv(samplesfile, show_col_types = FALSE)
 counts <- read_csv(countsfile, skip_empty_rows = TRUE, show_col_types = FALSE)
 names(counts)[1] <- 'Ensembl_ID'
 
-#Remove duplicates and missing values of gene_name
+#Remove duplicates and missing values of gene_name in counts variable
 counts <- counts[!duplicated(counts$gene_name), ]
 counts <- counts[!is.na(counts$gene_name),]
 
-#Add a column to colData with a meaningful tag
+#Add a column to colData with a meaningful tag, make Samples column a factor
 colData$colData_tag <- as.factor(apply(colData[c('Sample','Time','Treatment','Replicate', 'Study')], 1, 
                                        paste, collapse = "_"))
 colData$Sample <- as.factor(colData$Sample)
 
-#Get df of counts, normalized counts and row information
+#Get df of counts, normalized counts and row information. Clean colData.
 countsData <- subset(counts, select= -c(Ensembl_ID))
 
 colData <- colData[match(as.vector(colnames(countsData)), colData$colData_tag),]
 colData <- colData[!is.na(colData$colData_tag),]
+
 normalizedCounts <- cpm(Filter(is.numeric, countsData), normalized.lib.sizes=TRUE, 
                         log=TRUE, prior.count=1)
 normalizedCounts <- cbind(subset(counts, select = c(gene_name)), normalizedCounts)
+
 rowsInfo <- subset(counts, select = c(gene_name, Ensembl_ID))
 
 #Set names of rows
@@ -59,8 +66,9 @@ rm(counts)
 #_________________________________________UI____________________________________
 
 ui <- fluidPage(
-  titlePanel(title = 
-               'Gene expression in zebra fish across tissues'),
+  theme = bs_theme(version = 4, bootswatch = "united"),
+  titlePanel( h1("Gene expression in zebrafish", align = "center"), windowTitle = 
+               'zebrafishTranscriptomics'),
   
   sidebarLayout(
     sidebarPanel(
@@ -107,7 +115,9 @@ server <- function(input, output, session) {
     pheatmap(assays(summExp)$normalized[genelist(),colData(summExp)$Sample %in% tissuelist()],
                                         scale="row",cluster_rows = FALSE,
                                         cluster_cols = TRUE))
-  output$disc <- renderText('Disclaimer: if the heatmap does not appear until the window is resized, try to turn the device off from the R terminal')
+  output$disc <- renderText('Disclaimer: if the heatmap does not appear until 
+                            the window is resized, try to turn the device off from the 
+                            R terminal')
   
 }
 

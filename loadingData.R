@@ -5,6 +5,7 @@ library(SEtools)
 #library(org.Dr.eg.db)
 #library(GOSemSim)
 library(edgeR)
+library(rhdf5)
 library(HDF5Array)
 
 #Locate files

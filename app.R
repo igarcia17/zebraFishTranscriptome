@@ -16,25 +16,29 @@ library(pheatmap)
 #####################isnt it better to load just one and make the colData from the headers?
 
 samplesfile <- './data/sra_samples.csv'
-countsfile <- './data/final_counts.csv'
+countsfile <- './data/final_counts_info.csv'
 
-colData <- read_csv(samplesfile)
-counts <- read_csv(countsfile, skip_empty_rows = TRUE)
+colData <- read_csv(samplesfile, show_col_types = FALSE)
+counts <- read_csv(countsfile, skip_empty_rows = TRUE, show_col_types = FALSE)
 names(counts)[1] <- 'Ensembl_ID'
+
 #Remove duplicates and missing values of gene_name
 counts <- counts[!duplicated(counts$gene_name), ]
 counts <- counts[!is.na(counts$gene_name),]
+
 #Add a column to colData with a meaningful tag
-colData$colData_tag <- as.factor(apply(colData[c('Sample','Time','Treatment',
-                                                 'Replicate', 'Study')], 1, 
+colData$colData_tag <- as.factor(apply(colData[c('Sample','Time','Treatment','Replicate', 'Study')], 1, 
                                        paste, collapse = "_"))
 colData$Sample <- as.factor(colData$Sample)
+
 #Get df of counts, normalized counts and row information
 countsData <- subset(counts, select= -c(Ensembl_ID))
+
+colData <- colData[match(as.vector(colnames(countsData)), colData$colData_tag),]
+colData <- colData[!is.na(colData$colData_tag),]
 normalizedCounts <- cpm(Filter(is.numeric, countsData), normalized.lib.sizes=TRUE, 
                         log=TRUE, prior.count=1)
 normalizedCounts <- cbind(subset(counts, select = c(gene_name)), normalizedCounts)
-
 rowsInfo <- subset(counts, select = c(gene_name, Ensembl_ID))
 
 #Set names of rows
@@ -73,7 +77,8 @@ ui <- fluidPage(
     mainPanel(
       tabsetPanel(
         tabPanel("Counts", tableOutput(outputId = "rawCounts")),
-        tabPanel("Heatmap", plotOutput(outputId = "heatmap"))
+        tabPanel("Heatmap", plotOutput(outputId = "heatmap")),
+        tabPanel("Disclaimer", textOutput(outputId = 'disc'))
       )
   )))
 
@@ -102,6 +107,7 @@ server <- function(input, output, session) {
     pheatmap(assays(summExp)$normalized[genelist(),colData(summExp)$Sample %in% tissuelist()],
                                         scale="row",cluster_rows = FALSE,
                                         cluster_cols = TRUE))
+  output$disc <- renderText('Disclaimer: if the heatmap does not appear until the window is resized, try to turn the device off from the R terminal')
   
 }
 

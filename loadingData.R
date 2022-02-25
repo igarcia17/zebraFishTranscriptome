@@ -5,11 +5,11 @@ library(SEtools)
 #library(org.Dr.eg.db)
 #library(GOSemSim)
 library(edgeR)
-library(ggplot2)
+library(HDF5Array)
 
-#Load data
-.samplesfile <- './data/sra_samples.csv'
-.countsfile <- './data/final_counts_info.csv'
+#Locate files
+samplesfile <- './data/sra_samples.csv'
+countsfile <- './data/final_counts_info.csv'
 
 #Load data
 colData <- read_csv(samplesfile, show_col_types = FALSE)
@@ -34,6 +34,7 @@ colData <- colData[!is.na(colData$colData_tag),]
 normalizedCounts <- cpm(Filter(is.numeric, countsData), normalized.lib.sizes=TRUE, 
                         log=TRUE, prior.count=1)
 normalizedCounts <- cbind(subset(counts, select = c(gene_name)), normalizedCounts)
+
 rowsInfo <- subset(counts, select = c(gene_name, Ensembl_ID))
 
 #Set names of rows
@@ -50,15 +51,10 @@ rowData(summExp) <- rowsInfo
 
 #Remove intermediate variable 'counts'
 rm(counts)
-#_______________________________________________________________________________
 
-“cosmo”, 
- “darkly”
-“flatly”
-“journal”
-“lumen”, “lux”,
-“minty”, “pulse”, “sandstone”, “simplex”, “sketchy”,
-“superhero”, “united”, “yeti”
+saveHDF5SummarizedExperiment(summExp, dir="./datasummExp", prefix="", replace=FALSE,
+                             chunkdim=NULL, level=NULL)
+#_______________________________________________________________________________
 
 
 

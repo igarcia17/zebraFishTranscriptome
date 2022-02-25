@@ -5,10 +5,10 @@ account: ew1ur6-ines0garcia
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 5732280
-bundleId: 5617040
+bundleId: 5617071
 url: https://ew1ur6-ines0garcia.shinyapps.io/zebraFishTranscriptome/
-when: 1645789377.92309
-lastSyncTime: 1645789377.9231
+when: 1645790153.4476
+lastSyncTime: 1645790153.44762
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: .RData|loadingData.R|README.md
+ignoredFiles: .RData|loadingData.R|README.md|cheat_sheets

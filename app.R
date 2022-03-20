@@ -69,7 +69,7 @@ rm(counts)
 ui <- fluidPage(
   theme = bs_theme(version = 4, bootswatch = "united"),
   titlePanel( h1("Gene expression in zebrafish", align = "center"), windowTitle = 
-               'zebrafishTranscriptomics'),
+               'Zebrafish Transcriptomics'),
   
   sidebarLayout(
     sidebarPanel(
